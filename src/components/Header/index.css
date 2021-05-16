@@ -1,0 +1,17 @@
+.li-item {
+  list-style-type: none;
+}
+.custom-nav {
+  height: 10vh;
+}
+.logo {
+  width: 20%;
+  height: 20%;
+}
+
+@media (min-width: 768px) {
+  .logo {
+    width: 25%;
+    height: auto;
+  }
+}
