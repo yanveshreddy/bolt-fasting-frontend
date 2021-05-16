@@ -1,0 +1,46 @@
+a:hover {
+  color: #007bff;
+  text-decoration: none;
+}
+.bg-container {
+  height: 90vh;
+}
+.login-part {
+  height: 90vh;
+  width: 50%;
+}
+.cta-part {
+}
+.card {
+}
+.card-title {
+  color: #48525b;
+  font-size: 24px;
+}
+.form-control {
+  padding: 20px;
+  padding: 25px 15px;
+  margin-bottom: 1.3rem;
+  color: #657b90;
+}
+
+.form-control:focus {
+  color: #657b90;
+  border: 3px solid #4a49be;
+  outline: 0;
+  box-shadow: none;
+}
+
+.btn {
+  padding: 0.6rem 1.2rem;
+  align-self: stretch;
+}
+.btn-primary:hover {
+  box-shadow: darkgray;
+  transition: 0.3s;
+}
+.heading {
+  color: #4a49be;
+  font-size: 48px;
+  font-weight: 600;
+}
