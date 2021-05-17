@@ -5,7 +5,7 @@ import { Link } from "react-router-dom";
 
 const Header = () => {
   return (
-    <nav class="navbar navbar-light fixed custom-nav">
+    <nav className="navbar navbar-light fixed custom-nav">
       <div className="row col-12 d-flex justify-content-between align-items-center text-primary">
         <Link to="/">
           <img src={Logo} />
