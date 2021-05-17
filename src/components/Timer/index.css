@@ -1,0 +1,33 @@
+.bg-timer {
+  background-color: #4a49be;
+  border-radius: 24px;
+  height: 300px;
+}
+.timer-heading {
+  font-size: 12px;
+  color: #ffffff;
+  text-align: center;
+  opacity: 0.5;
+}
+
+.timer-value {
+  font-size: 24px;
+  color: #ffffff;
+}
+.time-heading {
+  font-size: 12px;
+  color: #ffffff;
+  text-align: start;
+  opacity: 0.5;
+}
+.time-value {
+  font-size: 12px;
+  color: #ffffff;
+}
+.button {
+  background-color: #f2b3a1;
+  border-radius: 16px;
+  color: #232370;
+  font-size: 12px;
+  font-weight: 700;
+}
