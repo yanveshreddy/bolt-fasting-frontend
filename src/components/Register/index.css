@@ -10,8 +10,12 @@ a:hover {
   width: 50%;
 }
 .cta-part {
+  /* background-color: #e6effe; */
+  height: 80vh;
 }
-.card {
+.bg-card {
+  background-color: #ffffff;
+  padding: 24px;
 }
 .card-title {
   color: #48525b;
@@ -30,6 +34,15 @@ a:hover {
   outline: 0;
   box-shadow: none;
 }
+.form-control-error {
+  color: crimson;
+}
+.form-control-error:focus {
+  color: crimson;
+  border: 3px solid #4a49be;
+  outline: 0;
+  box-shadow: none;
+}
 
 .btn {
   padding: 0.6rem 1.2rem;
@@ -40,7 +53,7 @@ a:hover {
   transition: 0.3s;
 }
 .heading {
-  color: #4a49be;
-  font-size: 48px;
+  color: #000000;
+  font-size: 40px;
   font-weight: 600;
 }

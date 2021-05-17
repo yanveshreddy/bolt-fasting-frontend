@@ -1,141 +1,194 @@
-import React from "react";
-import { Link } from "react-router-dom";
-
+import React, { useState, useEffect } from "react";
+import { Link, Redirect } from "react-router-dom";
 import "./index.css";
+import { validate } from "./validate";
 
 const Register = () => {
-  return (
-    <>
-      <div className="bg-container">
-        <div className="container">
-          <div className="row">
-            <div className="col-12 col-md-8 login-part d-flex flex-column justify-content-center">
-              {/* <div className=" align-items-center"> */}
-              <div className="bg-card">
-                <h2 class="card-title">Sign Up for free</h2>
+  const [values, setValues] = useState({});
+  const [errors, setErrors] = useState({});
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-                {/* <p>
+  useEffect(() => {
+    // setErrors(validate(values));
+    if (Object.keys(errors).length === 0 && isSubmitting) {
+      registerUser(values);
+    }
+  }, [errors]);
+
+  let registerUser = async (values) => {
+    let options = {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
+      body: JSON.stringify(values),
+    };
+    console.log(options.body);
+    let url = "http://localhost:3001/users/signup";
+    let response = await fetch(url, options);
+    let resData = await response.json();
+    console.log(response);
+    console.log(resData);
+    if (response.status === 200) {
+      // <Redirect to="/" />;
+      console.log("kkkkk");
+    }
+    await setIsSubmitting(false);
+  };
+
+  const handleSubmit = async (event) => {
+    if (event) event.preventDefault();
+    await setErrors(validate(values));
+    await setIsSubmitting(true);
+
+    // console.log(values);
+  };
+
+  const handleChange = (event) => {
+    event.persist();
+    // setErrors(validate(values));
+    setValues((values) => ({
+      ...values,
+      [event.target.name]: event.target.value,
+    }));
+  };
+
+  return (
+    <div className="bg-container">
+      <div className="container">
+        <div className="row bg-card">
+          <div className="col-12 col-md-7  login-part d-flex flex-column justify-content-center">
+            {/* <div className=" align-items-center"> */}
+            <div className=" ml-auto mt-5 pt-5 pb-5">
+              <h2 className="card-title">Sign Up for free</h2>
+
+              {/* <p>
                 Need an account ?{" "}
                 <Link to="register" className="text-primary">
                   Create an Account
                 </Link>
               </p> */}
-                <form>
-                  <div class="form-group">
+              <form onSubmit={handleSubmit}>
+                <div className="row">
+                  <div className="form-group col-md-6 mb-0">
+                    <label htmlFor="firstName">First Name</label>
                     <input
-                      type="text"
-                      class="form-control"
-                      id="name"
-                      placeholder="Name"
                       autoComplete="off"
+                      className={`form-control ${
+                        errors.firstName && "text-danger"
+                      }`}
+                      placeholder="First Name"
+                      type="text"
+                      name="firstName"
+                      value={values.firstName}
+                      onChange={handleChange}
                     />
+                    {errors.firstName && (
+                      <p className={`form-control-error text-danger`}>
+                        {errors.firstName}
+                      </p>
+                    )}
                   </div>
-                  <div class="form-group">
+                  <div className="form-group col-md-6">
+                    <label htmlFor="lastName">Last Name</label>
                     <input
-                      type="email"
-                      class="form-control"
-                      id="email"
-                      placeholder="Email"
+                      className={`form-control ${
+                        errors.lastName && "text-danger"
+                      }`}
+                      placeholder="Last Name"
+                      type="text"
+                      name="lastName"
+                      value={values.lastName}
+                      onChange={handleChange}
                     />
+                    {errors.lastName && (
+                      <p className="form-control-error">{errors.lastName}</p>
+                    )}
                   </div>
-                  <div class="form-group">
-                    <input
-                      type="password"
-                      class="form-control"
-                      id="password"
-                      placeholder="Password"
-                    />
-                  </div>
-                  <div class="form-group">
-                    <input
-                      type="password"
-                      class="form-control"
-                      id="confirm-password"
-                      placeholder="confirm-password"
-                    />
-                  </div>
-                  <div>
-                    <button class="btn btn-primary align-self-stretch">
-                      Create Account
-                    </button>
-                  </div>
-
-                  <div class="d-flex flex-row align-items-start justify-content-start mt-2">
-                    <p>Already Have an account ?</p>
-                    <Link to="/" className="ml-2 text-primary">
-                      Login
-                    </Link>
-                  </div>
-                </form>
-              </div>
-              {/* </div> */}
-            </div>
-            <div className="col-12  col-md-4 d-flex flex-column justify-content-center cta-part">
-              <h1 className="text-center heading">Loose Weight for Good</h1>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* <div class="container">
-      <div class="row justify-content-center">
-        <div class="col-md-5">
-          <div class="card">
-            <h2 class="card-title text-center">Sign Up for free</h2>
-            <div class="card-body py-md-4">
-              <form _lpchecked="1">
-                <div class="form-group">
-                  <input
-                    type="text"
-                    class="form-control"
-                    id="name"
-                    placeholder="Name"
-                    autoComplete="off"
-                  />
                 </div>
-                <div class="form-group">
+
+                <div className="form-group ">
+                  <label htmlFor="email">Email</label>
                   <input
                     type="email"
-                    class="form-control"
+                    className={`form-control ${errors.email && "text-danger"}`}
                     id="email"
                     placeholder="Email"
+                    name="email"
+                    value={values.email}
+                    onChange={handleChange}
                   />
+                  {errors.email && (
+                    <p className="form-control-error text-danger">
+                      {errors.email}
+                    </p>
+                  )}
                 </div>
-                <div class="form-group">
+                <div className="form-group ">
+                  <label htmlFor="password">Password</label>
                   <input
                     type="password"
-                    class="form-control"
+                    className={`form-control ${
+                      errors.password && "text-danger"
+                    }`}
                     id="password"
+                    name="password"
+                    value={values.password}
                     placeholder="Password"
+                    onChange={handleChange}
                   />
+                  {errors.password && (
+                    <p className="form-control-error text-danger">
+                      {errors.password}
+                    </p>
+                  )}
                 </div>
-                <div class="form-group">
+                <div className="form-group ">
+                  <label htmlFor="confirmpassword">Confirm Password</label>
                   <input
                     type="password"
-                    class="form-control"
+                    className={`form-control ${
+                      errors.confirmpassword && "text-danger"
+                    }`}
                     id="confirm-password"
+                    name="confirmpassword"
+                    value={values.confirmpassword}
                     placeholder="confirm-password"
+                    onChange={handleChange}
                   />
+                  {errors.confirmpassword && (
+                    <p className="form-control-error text-danger">
+                      {errors.confirmpassword}
+                    </p>
+                  )}
                 </div>
-                <div>
-                  <button class="btn btn-primary align-self-stretch">
+                <div className="mb-1">
+                  <button
+                    type="submit"
+                    className="btn btn-primary align-self-stretch"
+                  >
                     Create Account
                   </button>
                 </div>
 
-                <div class="d-flex flex-row align-items-start justify-content-start mt-2">
+                <div className="d-flex flex-row align-items-start justify-content-start mt-2">
                   <p>Already Have an account ?</p>
-                  <Link to="/" className="ml-2">
+                  <Link to="/" className="ml-2 text-primary">
                     Login
                   </Link>
                 </div>
               </form>
             </div>
+            {/* </div> */}
+          </div>
+
+          <div className="col-12  col-md-5 pt-4 d-flex flex-column justify-content-center cta-part">
+            <h1 className="text-center heading">Loose Weight for Good</h1>
           </div>
         </div>
       </div>
-    </div> */}
-    </>
+    </div>
   );
 };
 
