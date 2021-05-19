@@ -75,6 +75,7 @@ const Timer = () => {
 
   useEffect(() => {
     localStorage.setItem("prevStartTime", prevStartTimeValue);
+    console.log("kk");
   }, [prevStartTimeValue]);
 
   function handleGoalChange(e) {
