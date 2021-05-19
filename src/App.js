@@ -1,5 +1,5 @@
 // import logo from './logo.svg';
-import React, { useEffect, useState } from "react";
+import React, { Component, useEffect, useState } from "react";
 import "./App.css";
 import Header from "./components/Header";
 import {
@@ -11,48 +11,50 @@ import {
 import Login from "./components/Login";
 import Register from "./components/Register";
 import Dashboard from "./components/DashBoard";
-
-function App() {
-  let [isLoggedIn, setIsLoggedIn] = useState(false);
-  let [count, setCount] = useState(0);
-
-  useEffect(() => {
-    //rerendering
-  }, [count]);
-
-  async function handleCallBack(childData) {
-    await setIsLoggedIn(childData);
-    await setCount(count + 1);
-    console.log(isLoggedIn);
-    console.log(count);
+import AuthService from "./services/authService";
+// import history from "./helpers/history";
+class App extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      currentUser: undefined,
+    };
   }
-  return (
-    <div className="bg-container">
-      <div className="container">
-        <Router>
-          <Header />
-          {/* {isLoggedIn ? <Redirect to="/dashboard" /> : <Redirect to="/login" />} */}
-          {/* A <Switch> looks through its children <Route>s and
-            renders the first one that matches the current URL. */}
-          <Dashboard />
-          {/* <Switch>
-            <Route exact path="/login">
-              <Login handleCallBack={handleCallBack} message="hi" />
-            </Route>
-            <Route exact path="/register">
-              <Register />
-            </Route>
-            <Route path="/dashboard">
-              <Dashboard />
-            </Route>
-            <Route path="/">
-              <Redirect to="/login" />
-            </Route>
-          </Switch> */}
-        </Router>
+
+  componentDidMount() {
+    const user = AuthService.getCurrentUser();
+    if (user) {
+      this.setState({ currentUser: AuthService.getCurrentUser() });
+    }
+  }
+
+  render() {
+    const { currentUser } = this.state;
+    return (
+      <div className="bg-container">
+        <div className="container">
+          <Router>
+            <Header />
+            <Login />
+            <Switch>
+              <Route exact path="/login">
+                <Login />
+              </Route>
+              <Route exact path="/register">
+                <Register />
+              </Route>
+              <Route exact path="/dashboard">
+                <Dashboard />
+              </Route>
+              <Route exact path="/">
+                <Redirect to="/login" />
+              </Route>
+            </Switch>
+          </Router>
+        </div>
       </div>
-    </div>
-  );
+    );
+  }
 }
 
 export default App;

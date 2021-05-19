@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "./index.css";
 import pencilImage from "../../assets/pencil.svg";
-import { compareAsc, format } from "date-fns";
+import { format } from "date-fns";
 import isToday from "date-fns/isToday";
 import addHours from "date-fns/addHours";
 import addSeconds from "date-fns/addSeconds";

@@ -2,6 +2,10 @@ import React, { useState, useEffect } from "react";
 import { Link, Redirect } from "react-router-dom";
 import "./index.css";
 import { validate } from "./validate";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import AuthService from "../../services/authService";
+// import history from "../../helpers/history";
 
 const Register = () => {
   const [values, setValues] = useState({});
@@ -16,31 +20,18 @@ const Register = () => {
   }, [errors]);
 
   let registerUser = async (values) => {
-    let options = {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-      },
-      body: JSON.stringify(values),
-    };
-    console.log(options.body);
-    let url = "http://localhost:3001/users/signup";
-    let response = await fetch(url, options);
-    let resData = await response.json();
-    console.log(response);
-    console.log(resData);
-    if (response.status === 200) {
-      // <Redirect to="/" />;
-      console.log("kkkkk");
+    let response = await AuthService.register(values);
+    setIsSubmitting(false);
+
+    if (response.data.status === 200) {
+      // history.push("/");
     }
-    await setIsSubmitting(false);
   };
 
   const handleSubmit = async (event) => {
     if (event) event.preventDefault();
-    await setErrors(validate(values));
-    await setIsSubmitting(true);
+    setErrors(validate(values));
+    setIsSubmitting(true);
 
     // console.log(values);
   };
