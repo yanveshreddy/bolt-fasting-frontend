@@ -6,12 +6,20 @@ import isToday from "date-fns/isToday";
 import addHours from "date-fns/addHours";
 import addSeconds from "date-fns/addSeconds";
 import getUnixTime from "date-fns/getUnixTime";
+import fromUnixTime from "date-fns/fromUnixTime";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 
 const Timer = () => {
+  const [isTimerEnd, setIsTimerEnd] = useState(false);
+
+  let curDate = new Date();
+  let curDateTimeStamp = getUnixTime(new Date());
+
   const [fastingData, setFastingData] = useState({
     goalTime: 16,
-    startTime: new Date(),
-    estEndTime: addHours(new Date(), 16),
+    startTime: curDateTimeStamp,
+    estEndTime: addHours(curDate, 16),
     is_end_clicked: false,
   });
 
@@ -23,14 +31,17 @@ const Timer = () => {
   });
   const [isActive, setIsActive] = useState(false);
 
+  const [startPicker, setStartPicker] = useState(false);
+  const [endPicker, setEndPicker] = useState(false);
+
   useEffect(() => {
     let intervalId;
-    // console.log(time);
     if (isActive) {
       intervalId = setInterval(() => {
+        const hourCounter = Math.floor(time.counter / (60 * 60));
+        const minuteCounter = Math.floor(time.counter / 60) - hourCounter * 60;
+
         const secondCounter = time.counter % 60;
-        const minuteCounter = Math.floor(time.counter / 60);
-        const hourCounter = Math.floor(minuteCounter / 60);
 
         const computedSecond =
           String(secondCounter).length === 1
@@ -93,6 +104,54 @@ const Timer = () => {
       estEndTime: estEndTimeValue,
       is_end_clicked: false,
     }));
+  }
+
+  function onStartTimeEdit(datetime1) {
+    console.log(datetime1);
+    let startTimeValue = getUnixTime(datetime1);
+    let estEndTimeValue = addHours(datetime1, fastingData.goalTime);
+    let counter =
+      getUnixTime(new Date()) - startTimeValue < 0
+        ? 0
+        : getUnixTime(new Date()) - startTimeValue;
+    updateTimer(counter);
+    setIsActive(true);
+    setFastingData((fastingData) => ({
+      ...fastingData,
+      startTime: startTimeValue,
+      estEndTime: estEndTimeValue,
+      is_end_clicked: false,
+    }));
+  }
+
+  function onEndTimeEdit(datetimeobj) {
+    let endTimeValue = getUnixTime(datetimeobj);
+    let fastingTimeValue = endTimeValue - fastingData.startTime;
+    updateTimer(fastingTimeValue);
+    console.log(fastingTimeValue);
+    setIsActive(false);
+    setFastingData((fastingData) => ({
+      ...fastingData,
+      endTime: endTimeValue,
+      fastingTime: fastingTimeValue,
+      is_end_clicked: true,
+    }));
+  }
+
+  function updateTimer(counter) {
+    console.log(counter);
+    setTime((prevState) => ({
+      second: "00",
+      minute: "00",
+      hour: "00",
+      counter: counter,
+    }));
+    console.log(time.counter);
+  }
+  function handleEndTimeEditClick() {
+    if (isActive) {
+      setEndPicker(!endPicker);
+    }
   }
 
   function stopTimer() {
@@ -196,20 +255,62 @@ const Timer = () => {
       <div className="d-flex flex-row justify-content-between">
         <div className="mr-4">
           <p className="time-heading">STARTED</p>
-          <div className="d-flex flex-row align-items-start">
+          <div
+            className="d-flex flex-row align-items-start"
+            onClick={() => setStartPicker(!startPicker)}
+          >
             <h3 className="time-value mr-1">
-              {format(fastingData.startTime, "do MMM, hh:mm a")}
+              {format(fromUnixTime(fastingData.startTime), "do MMM, hh:mm a")}
             </h3>
-            <img src={pencilImage} />
+            <div className="">
+              {startPicker ? (
+                <DatePicker
+                  open={startPicker}
+                  onClickOutside={() => setStartPicker(!startPicker)}
+                  onChange={onStartTimeEdit}
+                  dateFormat={false}
+                  showTimeSelect
+                  showTimeSelectOnly
+                  timeIntervals={15}
+                  timeCaption="Time"
+                />
+              ) : (
+                <></>
+              )}
+            </div>
+            <img
+              onBlur={() => setStartPicker(!startPicker)}
+              src={pencilImage}
+            />
           </div>
         </div>
         <div>
           <p className="time-heading">FAST ENDING</p>
-          <div className="d-flex flex-row align-items-start">
+          <div
+            className="d-flex flex-row align-items-start"
+            onClick={handleEndTimeEditClick}
+          >
             <h3 className="time-value mr-1">
               {format(fastingData.estEndTime, "do MMM, hh:mm a")}
             </h3>
-            <img src={pencilImage} />
+
+            <div className="">
+              {endPicker ? (
+                <DatePicker
+                  open={endPicker}
+                  onClickOutside={() => setEndPicker(!endPicker)}
+                  onChange={onEndTimeEdit}
+                  dateFormat={false}
+                  showTimeSelect
+                  showTimeSelectOnly
+                  timeIntervals={15}
+                  timeCaption="Time"
+                />
+              ) : (
+                <></>
+              )}
+            </div>
+            <img onBlur={() => setEndPicker(!endPicker)} src={pencilImage} />
           </div>
         </div>
       </div>
