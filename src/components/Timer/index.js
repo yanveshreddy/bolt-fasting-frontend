@@ -9,9 +9,10 @@ import getUnixTime from "date-fns/getUnixTime";
 import fromUnixTime from "date-fns/fromUnixTime";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import { calculateTime } from "./timerLogic";
 
 const Timer = () => {
-  const [isTimerEnd, setIsTimerEnd] = useState(false);
+  // const [isTimerEnd, setIsTimerEnd] = useState(false);
 
   let curDate = new Date();
   let curDateTimeStamp = getUnixTime(new Date());
@@ -139,11 +140,13 @@ const Timer = () => {
   }
 
   function updateTimer(counter) {
-    console.log(counter);
+    let { computedHour, computedMinute, computedSecond } =
+      calculateTime(counter);
+
     setTime((prevState) => ({
-      second: "00",
-      minute: "00",
-      hour: "00",
+      second: computedSecond,
+      minute: computedMinute,
+      hour: computedHour,
       counter: counter,
     }));
     console.log(time.counter);
