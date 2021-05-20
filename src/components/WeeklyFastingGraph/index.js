@@ -3,7 +3,7 @@ import "./index.css";
 import { Bar } from "react-chartjs-2";
 import axios from "axios";
 import { format, fromUnixTime } from "date-fns";
-
+import UserFastingService from "../../services/userFastingService";
 // const randomInt = () => Math.floor(Math.random() * (10 - 1 + 1)) + 1;
 
 const WeeklyFastingGraph = () => {
@@ -15,14 +15,16 @@ const WeeklyFastingGraph = () => {
   const [isDataLoaded, setIsDataLoaded] = useState(false);
   // getFastingData();
   useEffect(() => {
-    getweeklyFastingData();
+    getweeklyData();
   }, [barApiData]);
-  async function getweeklyFastingData() {
+  async function getweeklyData() {
     try {
       if (!isDataLoaded) {
-        let url = "http://localhost:3001/users/2/getweeklyfastingData";
-        let response = await axios(url);
-        let dataList = response.data.data;
+        // let url = "http://localhost:3001/users/2/getweeklyfastingData";
+
+        // let response = await axios(url);
+        let response = await UserFastingService.getWeeklyFastingData();
+        let dataList = response.data;
         let label_list = [];
         let values_list = [];
         let colors_list = [];
@@ -30,7 +32,7 @@ const WeeklyFastingGraph = () => {
           let datetimestamp = element.started_at;
           let dateLabel = format(fromUnixTime(datetimestamp), "MMM do");
           label_list.push(dateLabel);
-          values_list.push(element.fasting_time);
+          values_list.push(Math.round(element.fasting_time / 3600));
           if (element.fasting_time >= 960) {
             colors_list.push("#5DD362");
           } else if (
@@ -60,8 +62,8 @@ const WeeklyFastingGraph = () => {
     datasets: [
       {
         label: "Recent Fasts",
-        barPercentage: 0.6,
-        barThickness: 8,
+        barPercentage: 0.8,
+        barThickness: 10,
         // maxBarThickness: 6,
         // minBarLength: 2,
         data: barApiData.valuesList,
@@ -86,10 +88,10 @@ const WeeklyFastingGraph = () => {
           },
         ],
         y: {
-          max: 2000,
+          max: 24,
           min: 0,
           ticks: {
-            stepSize: 200,
+            stepSize: 2,
           },
 
           linewidth: 0.1,
@@ -108,11 +110,11 @@ const WeeklyFastingGraph = () => {
   };
 
   return (
-    <div className="bg-weekly-graph">
-      <div className="d-flex flex-row justify-content-between">
-        <h5 className="text-black">
+    <div className="bg-weekly-graph d-flex flex-column justify-content-center">
+      <div className="d-flex flex-row justify-content-between align-items-center">
+        <h5 className="head-text">
           Average:
-          {Math.floor(barApiData.valuesList.reduce((a, b) => a + b, 0) / 7)}sec
+          {Math.floor(barApiData.valuesList.reduce((a, b) => a + b, 0) / 7)} sec
         </h5>
       </div>
       <Bar data={barData} options={barOptions.options} />

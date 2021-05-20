@@ -1,6 +1,7 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import "./index.css";
+import UserFastingService from "../../services/userFastingService";
 
 const StatContainer = () => {
   const [statData, setStatData] = useState({});
@@ -13,11 +14,11 @@ const StatContainer = () => {
   }, []);
   async function getFastingData() {
     try {
-      let url = "http://localhost:3001/users/2/getfastingdetails";
-      let response = await axios(url);
-      setStatData(response.data.data);
+      // let url = "http://localhost:3001/users/2/getfastingdetails";
+      let response = await UserFastingService.getFastingDetails();
+      setStatData(response.data);
       setIsDataLoaded(!isDataLoaded);
-      console.log(response.data.data);
+      console.log(response.data);
     } catch (error) {
       console.log(error);
     }
@@ -32,12 +33,16 @@ const StatContainer = () => {
             <h1 className="stat-value">{statData.total_fasts}</h1>
           </div>
           <div className="stat-box">
-            <p className="stat-heading">7 Fast avg.</p>
-            <h1 className="stat-value">14h</h1>
+            <p className="stat-heading"> Avg Fast </p>
+            <h1 className="stat-value">
+              {(Math.round(statData.avg_fast / 3600) * 10) / 10}h
+            </h1>
           </div>
           <div className="stat-box">
             <p className="stat-heading">Longest Fast</p>
-            <h1 className="stat-value"> {statData.longest_fast}h</h1>
+            <h1 className="stat-value">
+              {(Math.round(statData.longest_fast / 3600) * 10) / 10}h
+            </h1>
           </div>
           <div className="stat-box">
             <p className="stat-heading">Longest Streak</p>

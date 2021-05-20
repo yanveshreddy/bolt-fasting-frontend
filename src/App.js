@@ -2,59 +2,58 @@
 import React, { Component, useEffect, useState } from "react";
 import "./App.css";
 import Header from "./components/Header";
-import {
-  BrowserRouter as Router,
-  Switch,
-  Route,
-  Redirect,
-} from "react-router-dom";
+import { BrowserRouter, Switch, Route, Redirect } from "react-router-dom";
 import Login from "./components/Login";
 import Register from "./components/Register";
 import Dashboard from "./components/DashBoard";
 import AuthService from "./services/authService";
 // import history from "./helpers/history";
-class App extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      currentUser: undefined,
-    };
-  }
+const App = () => {
+  let [isLoggedIn, setIsLoggedIn] = useState(false);
+  let [currentUser, setCurrentUser] = useState(false);
 
-  componentDidMount() {
-    const user = AuthService.getCurrentUser();
-    if (user) {
-      this.setState({ currentUser: AuthService.getCurrentUser() });
-    }
-  }
+  // constructor(props) {
 
-  render() {
-    const { currentUser } = this.state;
-    return (
-      <div className="bg-container">
-        <div className="container">
-          <Router>
-            <Header />
-            <Login />
-            <Switch>
-              <Route exact path="/login">
-                <Login />
-              </Route>
-              <Route exact path="/register">
-                <Register />
-              </Route>
-              <Route exact path="/dashboard">
-                <Dashboard />
-              </Route>
-              <Route exact path="/">
-                <Redirect to="/login" />
-              </Route>
-            </Switch>
-          </Router>
-        </div>
+  //   super(props);
+  //   this.state = {
+  //     currentUser: undefined,
+  //     isLoggedIn: false,
+  //   };
+  // }
+
+  let handleCallback = (data) => {
+    console.log("isLoggedIn:" + data);
+    setIsLoggedIn(data);
+  };
+
+  useEffect(() => {
+    // const user = AuthService.getCurrentUser();
+    console.log("in did mount");
+    // if (user) {
+    //   setCurrentUser(AuthService.getCurrentUser());
+    // }
+  }, [isLoggedIn, currentUser]);
+
+  // const { currentUser } = this.state;
+  return (
+    <div className="bg-container">
+      <div className="container">
+        <BrowserRouter>
+          <Header isLoggedIn={isLoggedIn} onLogout={handleCallback} />
+
+          <Switch>
+            <Route exact path="/login" component={Login} />
+
+            <Route exact path="/register" component={Register} />
+
+            <Route exact path="/dashboard" component={Dashboard} />
+
+            <Route exact path="/" component={Login} />
+          </Switch>
+        </BrowserRouter>
       </div>
-    );
-  }
-}
+    </div>
+  );
+};
 
 export default App;

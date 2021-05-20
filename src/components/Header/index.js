@@ -1,46 +1,34 @@
-import React, { Component } from "react";
+import React, { Component, useEffect, useState } from "react";
 import "./index.css";
 import Logo from "../../assets/logo.png";
-import { Link, Redirect } from "react-router-dom";
+import { Link, withRouter } from "react-router-dom";
 import AuthService from "../../services/authService";
-class Header extends Component {
-  constructor(props) {
-    super(props);
-    this.logout = this.logout.bind(this);
+import Cookies from "js-cookie";
 
-    this.state = {
-      currentUser: undefined,
-    };
-  }
+const Header = (props) => {
+  const jwtToken = Cookies.get("jwt_token");
 
-  componentDidMount() {
-    const user = AuthService.getCurrentUser();
-    if (user) {
-      this.setState({ currentUser: AuthService.getCurrentUser() });
-    }
-  }
-
-  logout() {
+  const { history } = props;
+  let logout = () => {
     AuthService.logout();
-    <Redirect to="/" />;
-    // history.push("/login");
-  }
-  render() {
-    const { currentUser } = this.state;
-    return (
-      <div>
-        {currentUser && (
-          <nav className="navbar navbar-light fixed custom-nav">
-            <div className="row col-12 d-flex justify-content-between align-items-center text-primary">
-              <Link to="/">
-                <img src={Logo} />
-              </Link>
-              <a onClick={this.logout} className="nav-item nav-link">
-                Logout
-              </a>
-            </div>
-          </nav>
-        )}
+
+    history.replace("/login");
+  };
+
+  return (
+    <div>
+      {jwtToken ? (
+        <nav className="navbar navbar-light fixed custom-nav">
+          <div className="row col-12 d-flex justify-content-between align-items-center text-primary">
+            <Link to="/">
+              <img src={Logo} />
+            </Link>
+            <a onClick={logout} className="nav-item nav-link">
+              Logout
+            </a>
+          </div>
+        </nav>
+      ) : (
         <nav className="navbar navbar-light fixed custom-nav">
           <div className="row col-12 d-flex justify-content-between align-items-center text-primary">
             <Link to="/">
@@ -56,9 +44,9 @@ class Header extends Component {
             </ul>
           </div>
         </nav>
-      </div>
-    );
-  }
-}
+      )}
+    </div>
+  );
+};
 
-export default Header;
+export default withRouter(Header);

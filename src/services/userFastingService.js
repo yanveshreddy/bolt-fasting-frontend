@@ -1,13 +1,17 @@
 import axios from "axios";
-import authHeader from "authHeader.js";
+import authHeader from "./authHeader";
+import Cookies from "js-cookie";
 
-const API_URL = "http://localhost:3001/api/user/:userId/";
+const userId = Cookies.get("userId");
+console.log(userId);
+const API_URL = `http://localhost:3001/api/user/${userId}/`;
 
 class userFastingService {
-  async getweeklyfastingData() {
-    let response = await axios(API_URL + "getweeklyfastingdata", {
+  async getWeeklyFastingData() {
+    let response = await axios(API_URL + "getweeklyfastingData", {
       headers: authHeader(),
     });
+    console.log(response.data);
     return response.data;
   }
 
@@ -19,13 +23,11 @@ class userFastingService {
   }
 
   async postUserFastingDetails(values) {
+    console.log(values);
     let options = {
       url: API_URL + "fastingdetails",
       method: "POST",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json;charset=UTF-8",
-      },
+      headers: authHeader(),
       data: values,
     };
     let response = await axios(options);
@@ -33,13 +35,11 @@ class userFastingService {
   }
 
   async postUserFastingHistory(values) {
+    console.log(values);
     let options = {
       url: API_URL + "fastinghistory",
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-      },
+      headers: authHeader(),
       data: values,
     };
     let response = await axios(options);

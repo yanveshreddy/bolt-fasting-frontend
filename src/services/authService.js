@@ -1,4 +1,5 @@
 import axios from "axios";
+import Cookies from "js-cookie";
 
 const API_URL = "http://localhost:3001/api/auth/";
 
@@ -21,7 +22,12 @@ class AuthService {
       let response = await axios(options);
 
       if (response.data.data.accessToken) {
-        localStorage.setItem("user", response.data.data);
+        Cookies.set("jwt_token", response.data.data.accessToken, {
+          expires: 30,
+        });
+        console.log(response.data.data);
+        Cookies.set("userId", response.data.data.userId);
+        // localStorage.setItem("user", response.data.data);
       }
       return response;
     } catch (error) {
@@ -30,7 +36,8 @@ class AuthService {
   }
 
   logout() {
-    localStorage.removeItem("user");
+    // localStorage.removeItem("user");
+    Cookies.remove("jwt_token");
   }
 
   async register({ firstname, lastName, email, password }) {

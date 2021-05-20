@@ -1,8 +1,10 @@
-export default function authHeader() {
-  const user = JSON.parse(localStorage.getItem("user"));
+import Cookies from "js-cookie";
 
-  if (user && user.accessToken) {
-    return { "x-access-token": user.accessToken };
+export default function authHeader() {
+  const jwtToken = Cookies.get("jwt-token");
+
+  if (jwtToken) {
+    return { "x-access-token": jwtToken };
   } else {
     return {};
   }
